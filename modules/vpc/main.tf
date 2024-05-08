@@ -5,12 +5,13 @@ resource "aws_vpc" "main" {
     Name = "JavaHome-VPC"
   }
 }
-
-resource "aws_subnet" "my_subnets" {
-  count             = var.subnet_count
+ 
+resource "aws_subnet" "public" {
+  count             = length(var.subnet_cidrs)
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.subnet_cidr[count.index]
-  availability_zone = var.availability_zones[count.index]
+
+  cidr_block        = var.subnet_cidrs[count.index]
+  availability_zone = data.aws_availability_zones.azs.names[count.index]
   tags = {
     Name = "Pub-Subnet-${count.index}"
   }
